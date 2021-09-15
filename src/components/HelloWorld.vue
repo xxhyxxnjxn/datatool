@@ -1,58 +1,119 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div>
+    <v-row justify="center" no-gutters>
+      <v-col
+          cols="12"
+          md="9"
+          lg="6"
+      >
+        <v-card
+            max-width="1200"
+            outlined
+            ref="form"
+        >
+          <v-card-text>
+            <v-container fluid grid-list-lg>
+              <v-textarea
+                  v-model="inputData"
+                  clearable
+                  clear-icon="mdi-close-circle"
+                  label="Text"
+                  @keyup.enter="submit"
+                  rows="10"
+                  row-height="30"
+              ></v-textarea>
+            </v-container>
+          </v-card-text>
+          <v-card-text>
+            <v-row>
+              <v-col
+                  cols="12"
+                  sm="6"
+              >
+                <v-text-field
+                    v-model="tdName"
+                    color="purple darken-2"
+                    label="이름"
+                    outlined
+                    @keyup.enter="submit"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col
+                  cols="12"
+                  sm="6"
+              >
+                <v-text-field
+                    v-model="fee"
+                    color="purple darken-2"
+                    label="수수료"
+                    hint="곱하기 2 해줘야 함 => ex) 사는데 수수료 0.075 => 0.15, 이유 : 탈출까지 계산하는데 진입 하고 탈출하면 0.75가 2번 들기때문"
+                    persistent-hint
+                    outlined
+                    @keyup.enter="submit"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-divider class="mt-12"></v-divider>
+          <v-card-actions>
+            <v-btn
+                color="primary"
+                text
+                @click="submit"
+            >
+              Submit
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <MySnackBarComponent
+        v-bind:snackbar.sync="snackbar"
+        :text="text"
+    >
+    </MySnackBarComponent>
   </div>
 </template>
-
 <script>
+import MySnackBarComponent from "@/components/about/MySnackBarComponent";
+
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+  components: {
+    MySnackBarComponent,
+  },
+  data: () => ({
+    inputData: '',
+    tdName: '',
+    fee: '0.15',
+    snackbar: false,
+    text: '',
+  }),
+  methods: { // 메소드 객체
+    submit() {
+      // Perform an action
+      const params = new URLSearchParams();
+      params.append('inputData', this.inputData);
+      params.append('tdName', this.tdName);
+      params.append('fee', this.fee);
+
+      this.$axios.post('/api/insert/', params).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+          this.text = '저장되었습니다.';
+        } else {
+          this.text = '저장하지 못하였습니다.';
+        }
+        this.snackbar = true;
+      }).catch(err => {
+        console.log(err)
+      })
+    },
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
 </style>
