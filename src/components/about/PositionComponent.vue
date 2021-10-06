@@ -83,6 +83,18 @@
                 <div v-if="test.name ==='id'">
                   {{ tradePiecesFirstTable.indexOf(item) + 1 }}
                 </div>
+                <div v-else-if="test.name ==='start' || test.name ==='end'">
+<!--                  <td @click="clickDate(item['start'],item['end'])"> {{ item[`${test.name}`] }} </td>-->
+                  <td>
+                    <DialogComponent
+                        :start-date="item['start']"
+                        :end-date="item['end']"
+                        :tradeTotal="tradeTotalsFirstTable"
+                        :test="item[`${test.name}`]"
+                        v-show="showFirstTable"
+                    />
+                  </td>
+                </div>
                 <div v-else>
                   <div v-if="test.name ==='runupPer' && showEntryChip(item[`${test.name}`])">
                     <td style="color: red"> {{ parseFloatData(item[`${test.name}`]) }} </td>
@@ -114,6 +126,18 @@
                 <div v-if="test.name ==='id'">
                   {{ tradePiecesSecondTable.indexOf(item) + 1 }}
                 </div>
+                <div v-else-if="test.name ==='start' || test.name ==='end'">
+<!--                  <td @click="secondClickDate(item['start'],item['end'])"> {{ item[`${test.name}`] }} </td>-->
+                  <td>
+                    <DialogComponent
+                        :start-date="item['start']"
+                        :end-date="item['end']"
+                        :tradeTotal="tradeTotalsSecondTable"
+                        :test="item[`${test.name}`]"
+                        v-show="showSecondTable"
+                    />
+                  </td>
+                </div>
                 <div v-else>
                   <div v-if="test.name ==='runupPer' && showEntryChip(item[`${test.name}`])">
                     <td style="color: red"> {{ parseFloatData(item[`${test.name}`]) }} </td>
@@ -140,6 +164,18 @@
               <span :key="index">
                 <div v-if="test.name ==='id'">
                   {{ tradePiecesSecondTable.indexOf(item) + 1 }}
+                </div>
+                <div v-else-if="test.name ==='start' || test.name ==='end'">
+<!--                  <td @click="secondClickDate(item['start'],item['end'])"> {{ item[`${test.name}`] }} </td>-->
+                <td>
+                    <DialogComponent
+                        :start-date="item['start']"
+                        :end-date="item['end']"
+                        :tradeTotal="tradeTotalsSecondTable"
+                        :test="item[`${test.name}`]"
+                        v-show="showSecondTable"
+                    />
+                  </td>
                 </div>
                 <div v-else>
                   <div v-if="test.name ==='runupPer' && showEntryChip(item[`${test.name}`])">
@@ -168,13 +204,15 @@
 import MyDataTableComponent from "@/components/about/MyDataTableComponent";
 import MySnackBarComponent from "@/components/about/MySnackBarComponent";
 import CompareDataTableComponent from "@/components/about/CompareDataTableComponent";
+import DialogComponent from "@/components/about/DialogComponent";
 
 export default {
   name: "PositionComponent",
   components: {
     MyDataTableComponent,
     MySnackBarComponent,
-    CompareDataTableComponent
+    CompareDataTableComponent,
+    DialogComponent,
   },
   props: {
     response: Object,
@@ -201,6 +239,9 @@ export default {
             this.tradePiecesFirstTable.push(item);
           }
         })
+
+        this.firstStartDate = '';
+        this.firstEndDate = '';
         this.showFirstTable = true;
       }
     },
@@ -218,6 +259,9 @@ export default {
             this.tradePiecesSecondTable.push(item);
           }
         })
+
+        this.secondStartDate = '';
+        this.secondEndDate = '';
         this.showSecondTable = true;
       }
     },
@@ -229,6 +273,10 @@ export default {
         newVal.forEach(item => {
           this.tradePiecesFirstTable.push(item);
         })
+
+        this.firstStartDate = '';
+        this.firstEndDate = '';
+
         this.showFirstTable = true;
       }
     },
@@ -239,6 +287,10 @@ export default {
         newVal.forEach(item => {
           this.tradePiecesSecondTable.push(item);
         })
+
+        this.secondStartDate = '';
+        this.secondEndDate = '';
+
         this.showSecondTable = true;
       }
     },
@@ -247,6 +299,9 @@ export default {
       handler(newVal) {
         this.firstTableName = newVal.tdName;
         this.tradePiecesFirstTable = [];
+        this.firstStartDate = '';
+        this.firstEndDate = '';
+
         this.showFirstTable = false;
       }
     },
@@ -255,6 +310,9 @@ export default {
       handler(newVal) {
         this.secondTableNames = newVal.tdName;
         this.tradePiecesSecondTable = [];
+        this.secondStartDate = '';
+        this.secondEndDate = '';
+
         this.showSecondTable = false;
       }
     },
@@ -297,6 +355,8 @@ export default {
     ],
     secondCustomSlotInfo: [
       {name: 'id', slotName: 'item.id'},
+      {name: 'start', slotName: 'item.start'},
+      {name: 'end', slotName: 'item.end'},
       {name: 'profitPer', slotName: 'item.profitPer'},
       {name: 'runupPer', slotName: 'item.runupPer'},
       {name: 'drawdownPer', slotName: 'item.drawdownPer'},
