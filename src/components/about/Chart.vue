@@ -1,6 +1,6 @@
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 <template>
-  <div id="charDiv">
+  <div id="charDiv" ref = "charDiv">
   </div>
 </template>
 <script>
@@ -18,12 +18,22 @@ export default {
     candleSeries: null,
     volumeSeries: null,
   }),
+  // created: function () {
+  //   this.$nextTick(function() {
+  //     this.drawChart();
+  //   });
+  // },
+  mounted: function () {
+    this.$nextTick(function() {
+      this.drawChart();
+    });
+  },
   methods: {
     drawChart() {
       var chartWidth = 950;
       var chartHeight = 650;
       // debugger
-      var chartDivId = document.getElementById("charDiv");
+      var chartDivId = this.$refs["charDiv"];
       this.chart2 = createChart(chartDivId, {
         width: chartWidth,
         height: chartHeight,

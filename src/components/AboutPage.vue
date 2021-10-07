@@ -72,6 +72,14 @@
         v-bind:tradeName="tradeName"
         v-bind:secondTradeName="secondTradeName"
     />
+    <AllDataComponent
+      ref="all_data_component"
+      :tradeName = "tradeName"
+      :secondTradeName="secondTradeName"
+      :response="response"
+      :secondResponse="secondResponse"
+    >
+    </AllDataComponent>
   </v-container>
 </template>
 
@@ -82,6 +90,7 @@ import LongComponent from "@/components/about/LongComponent";
 import ShortComponent from "@/components/about/ShortComponent";
 import PositionComponent from "@/components/about/PositionComponent";
 import CompareComponent from "@/components/about/CompareComponent";
+import AllDataComponent from "@/components/about/AllDataComponent";
 
 export default {
   name: 'About',
@@ -92,6 +101,7 @@ export default {
     ShortComponent,
     PositionComponent,
     CompareComponent,
+    AllDataComponent,
   },
   data: () => ({
     tradeName: null,
